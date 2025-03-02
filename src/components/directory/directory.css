@@ -1,0 +1,81 @@
+.directory-styles {
+  width: 100%;
+  min-height: 20px;
+  color: blue;
+
+  .current-working-directory {
+    color: var(--contrast-color);
+
+    font-weight: bold;
+  }
+
+  .value-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+
+    .arrow-filler {
+      width: 20px;
+      height: 20px;
+    }
+
+    .arrow {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    .arrow.expand-arrow {
+      transform: rotate(0deg);
+    }
+
+    .arrow.collapse-arrow {
+      transform: rotate(-90deg);
+    }
+
+    p {
+      margin: 0;
+      width: fit-content;
+      cursor: pointer;
+    }
+
+    .img-hover-effect {
+      width: 15px;
+      height: 1px;
+      cursor: pointer;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+  }
+
+  .value-actions:hover .img-hover-effect {
+    opacity: 1;
+    height: 15px;
+  }
+
+  .input-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .input-actions > button {
+    height: 1.5rem;
+    padding: 3px 6px;
+    text-align: center;
+    line-height: 1.24;
+  }
+
+  .nodes-wrapper {
+    position: relative;
+    padding: 5px 0 0 20px;
+
+    list-style-type: none; /* Remove bullets */
+    margin: 0;
+  }
+
+  :first-child {
+    user-select: none;
+    text-align: left;
+  }
+}

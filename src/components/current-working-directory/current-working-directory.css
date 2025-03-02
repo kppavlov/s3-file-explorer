@@ -1,0 +1,6 @@
+.cwd-tree-styles {
+  .directory-styles > p {
+    text-decoration: underline;
+    text-decoration-color: orangered;
+  }
+}
