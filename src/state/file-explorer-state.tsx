@@ -12,6 +12,8 @@ interface TreeContextState {
   setContents: (contents: Array<Array<string>>) => void;
   setBucketName: (bucketName: string) => void;
   setTree: (tree: FileSystemTree | null) => void;
+  setPathToKeyMap: (...paths: string[]) => void;
+  setExpandedPaths: (path: string) => void;
   updateTreePath: (
     path: string,
     newNode: FileTreeNode | DirectoryTreeNode,
@@ -20,6 +22,8 @@ interface TreeContextState {
   bucketName: string;
   selectedCurrentWorkingDir: string;
   tree: FileSystemTree | null;
+  pathToKeyMap: Record<string, string>;
+  expandedPaths: Set<string>;
 }
 
 type WithSelectors<S> = S extends { getState: () => infer T }
@@ -44,6 +48,35 @@ export const useFileExplorerState = create<TreeContextState>()((set) => ({
   contents: [],
   tree: null,
   selectedCurrentWorkingDir: "",
+  pathToKeyMap: {},
+  expandedPaths: new Set<string>(),
+  setPathToKeyMap: (...paths) =>
+    set((state) => {
+      const newState = {
+        pathToKeyMap: {
+          ...state.pathToKeyMap,
+        },
+      };
+
+      for (const path of paths) {
+        newState.pathToKeyMap[path] = crypto.randomUUID();
+      }
+
+      return newState;
+    }),
+  setExpandedPaths: (path) =>
+    set((state) => {
+      const newSet = new Set(state.expandedPaths);
+      if (newSet.has(path)) {
+        newSet.delete(path);
+      } else {
+        newSet.add(path);
+      }
+
+      return {
+        expandedPaths: newSet,
+      };
+    }),
   setSelectedCurrentWorkingDir: (path) =>
     set(() => ({
       selectedCurrentWorkingDir: path,
@@ -70,7 +103,8 @@ export const useFileExplorerState = create<TreeContextState>()((set) => ({
     })),
 }));
 
-export const useFileExplorerStateSelectors = createSelectors(useFileExplorerState);
+export const useFileExplorerStateSelectors =
+  createSelectors(useFileExplorerState);
 export const pathLevelDirectorySubscription = (path: string) =>
   useFileExplorerState((state) => state.tree?.searchDfs(path, "path"));
 export const pathLevelCwdSubscription = (path: string) =>
@@ -79,3 +113,5 @@ export const pathLevelCwdSubscription = (path: string) =>
       ? state.selectedCurrentWorkingDir
       : null,
   );
+export const pathLevelKeySubscription = (path: string) =>
+  useFileExplorerState((state) => state.pathToKeyMap[path]);

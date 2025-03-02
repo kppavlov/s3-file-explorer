@@ -5,5 +5,6 @@ type Props = {
 };
 
 export const File = ({ value }: Props) => {
+  console.log(value);
   return <div className="file-styles">{value}</div>;
 };

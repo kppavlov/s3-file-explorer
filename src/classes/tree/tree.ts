@@ -6,7 +6,8 @@ interface ITreeNode<Node> {
   value: string;
   path: string;
   nodes: Node[];
-  Component: ComponentType<{ value: string; path: string }>;
+  componentKey: string;
+  Component: ComponentType<{ value: string; data: Node }>;
 }
 
 interface IFileTreeNode extends ITreeNode<never> {
@@ -28,6 +29,7 @@ export class FileTreeNode implements IFileTreeNode {
   value = "";
   path = "";
   nodes = [];
+  componentKey = crypto.randomUUID();
   Component = File;
 
   constructor(value: string, parentPath = "") {
@@ -49,6 +51,7 @@ export class DirectoryTreeNode implements IDirectoryTreeNode {
   value: IDirectoryTreeNode["value"] = "";
   nodes: (DirectoryTreeNode | FileTreeNode)[] = [];
   path = "";
+  componentKey = crypto.randomUUID();
   Component = Directory;
 
   constructor(value: string, parentPath = "") {
@@ -119,11 +122,17 @@ export class FileSystemTree {
 
       if (child[searchBy] === value) {
         children[i] = newNode;
-        break;
-      } else {
-        this.replaceNode(child.nodes, newNode, value, searchBy);
+        return true;
+      }
+
+      const found = this.replaceNode(child.nodes, newNode, value, searchBy);
+
+      if (found) {
+        return true;
       }
     }
+
+    return false;
   }
 
   clone() {
@@ -154,19 +163,20 @@ export class FileSystemTree {
     return clonedNode;
   }
 
-  buildWholeTree(prefixes: Array<Array<string>>) {
+  buildWholeTree(prefixes: Array<Array<string>>, cb: (path: string) => void) {
     if (!this.root) {
       return;
     }
 
     for (const prefix of prefixes) {
-      this.addNodesByPrefix(prefix, this.root);
+      this.addNodesByPrefix(prefix, this.root, cb);
     }
   }
 
   addNodesByPrefix(
     prefixes: Array<string>,
     node: DirectoryTreeNode | FileTreeNode,
+    cb: (path: string) => void,
   ) {
     let prevNode: DirectoryTreeNode | FileTreeNode | null = null;
     const prefixesLength = prefixes.length - 1;
@@ -180,6 +190,7 @@ export class FileSystemTree {
 
         if (prevNode && prevNode instanceof DirectoryTreeNode) {
           fileNode.path = `${prevNode.path}/${prefix}`;
+          cb(fileNode.path);
           prevNode.addNode(fileNode);
         } else {
           currentNode.addNode(fileNode);
@@ -192,10 +203,11 @@ export class FileSystemTree {
 
         if (prevNode && prevNode instanceof DirectoryTreeNode) {
           dirNode.path = `${prevNode.path}/${prefix}`;
-
+          cb(dirNode.path);
           prevNode.addNode(dirNode);
         } else {
           dirNode.path = `${currentNode.path}/${prefix}`;
+          cb(dirNode.path);
           currentNode.addNode(dirNode);
         }
 

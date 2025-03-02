@@ -5,6 +5,7 @@ import {
   useState,
   useMemo,
   useEffect,
+  KeyboardEvent,
 } from "react";
 import ArrowDown from "../../assets/arrow-down-icon.png";
 import NewFolderIcon from "../../assets/new-folder-icon.png";
@@ -29,6 +30,7 @@ export const DirectoryActions = ({
   expanded,
   dir,
 }: PropsWithChildren<Props>) => {
+  const setPathToKeyMap = useFileExplorerStateSelectors.use.setPathToKeyMap();
   const inputCreateFolderRef = useRef<HTMLInputElement | null>(null);
   const inputCreateFileRef = useRef<HTMLInputElement | null>(null);
   const [showFolderNameInput, setShowFolderNameInput] = useState(false);
@@ -65,10 +67,9 @@ export const DirectoryActions = ({
         return;
       }
       const newDir = new DirectoryTreeNode(val, dir.path);
-      const parentCloned = dir.clone();
-
-      parentCloned.addNode(newDir);
-      updateTreePath(dir.value, parentCloned);
+      dir.addNode(newDir);
+      updateTreePath(dir.value, dir);
+      setPathToKeyMap(dir.path, `${dir.path}/${val}`);
 
       setShowFolderNameInput(false);
     }
@@ -85,21 +86,28 @@ export const DirectoryActions = ({
     }
 
     if (dir instanceof DirectoryTreeNode) {
-      await s3.createObject(val, `${dir.path}/${val.name}`);
+      // removes the bucket name from the path
+      const dirSplit = dir.path.split("/");
+      const objectPath = dirSplit.splice(2, dirSplit.length - 1).join("/");
+
+      await s3.createObject(val, `${objectPath}/${val.name}`);
 
       const nodeToAdd = new FileTreeNode(val.name, dir.path);
-      const clone = dir.clone();
-      clone.addNode(nodeToAdd);
-      updateTreePath(dir.value, clone);
+      dir.addNode(nodeToAdd);
+      updateTreePath(dir.value, dir);
+      setPathToKeyMap(dir.path, `${dir.path}/${val}`);
       setShowFileNameInput(false);
     }
   }, []);
 
-  const handleKeyDownCreateFolder = useCallback((e) => {
-    if (e.key === "Enter") {
-      createFolder();
-    }
-  }, []);
+  const handleKeyDownCreateFolder = useCallback(
+    (e: KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        createFolder();
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
     return () => {

@@ -1,8 +1,12 @@
-import { Directory } from "../directory/Directory.tsx";
 import { memo } from "react";
 import { useFileExplorerStateSelectors } from "../../state/file-explorer-state.tsx";
 
+// COMPONENTS
+import { FileExplorerNode } from "../file-explorer/FileExplorerNode.tsx";
+
+// STYLES
 import "./current-working-directory.css";
+import { Title } from "../title/Title.tsx";
 
 export const CurrentWorkingDirectory = memo(() => {
   const cwd = useFileExplorerStateSelectors.use.currentWorkingDir();
@@ -12,8 +16,11 @@ export const CurrentWorkingDirectory = memo(() => {
   }
 
   return (
-    <div className="fs-tree cwd-tree-styles">
-      <Directory value={cwd.value} path={cwd.path} />
+    <div>
+      <Title>Current working directory</Title>
+      <div className="fs-tree cwd-tree-styles">
+        <FileExplorerNode node={cwd} />
+      </div>
     </div>
   );
 });

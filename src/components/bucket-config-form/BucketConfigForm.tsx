@@ -5,13 +5,13 @@ import S3 from "../../classes/s3-access/s3.ts";
 
 // COMPONENTS
 import { Input } from "../input/input.tsx";
+import { Button } from "../button/Button.tsx";
 
 // STYLES
 import "./bucket-config-form.css";
 
 // HOOKS
 import { useFileExplorerStateSelectors } from "../../state/file-explorer-state.tsx";
-import {Button} from "../button/Button.tsx";
 
 export const BucketConfigForm = memo(() => {
   const setBucketName = useFileExplorerStateSelectors.use.setBucketName();
@@ -76,7 +76,9 @@ export const BucketConfigForm = memo(() => {
 
         <Input name="region" label="Region" />
 
-        <Button disabled={isPending} type="submit">Connect to S3</Button>
+        <Button disabled={isPending} type="submit">
+          Connect to S3
+        </Button>
       </form>
     </>
   );
