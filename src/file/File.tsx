@@ -14,6 +14,9 @@ import s3 from "../classes/s3-access/s3.ts";
 // HOOKS
 import { useFileExplorerStateSelectors } from "../state/file-explorer-state.tsx";
 
+// UTILS
+import { makeBrowserDownloadFile } from "./utils.ts";
+
 // STYLES
 import "./file.css";
 
@@ -25,6 +28,8 @@ type Props = {
 export const File = ({ value, path }: Props) => {
   const setCalloutState = useFileExplorerStateSelectors.use.setCalloutState();
   const setPathToKeyMap = useFileExplorerStateSelectors.use.setPathToKeyMap();
+  const deletePathToKeyMap =
+    useFileExplorerStateSelectors.use.deletePathToKeyMap();
   const removeNodeFromTree =
     useFileExplorerStateSelectors.use.removeNodeFromTree();
   const [openPopup, setOpenPopup] = useState(false);
@@ -42,7 +47,9 @@ export const File = ({ value, path }: Props) => {
       const parentPath = pathSplit.join("/");
 
       removeNodeFromTree(path);
+      deletePathToKeyMap(path);
       setPathToKeyMap(parentPath);
+
       setOpenPopup(false);
       setCalloutState({
         open: true,
@@ -75,12 +82,7 @@ export const File = ({ value, path }: Props) => {
     try {
       const objData = await s3.getObject(valueToGet);
       const bytes = await objData.Body.transformToByteArray();
-      const blob = window.URL.createObjectURL(new Blob(bytes));
-      const anchor = document.createElement("a");
-      anchor.href = blob;
-      anchor.download = value;
-      anchor.click();
-      window.URL.revokeObjectURL(blob);
+      makeBrowserDownloadFile(bytes, value);
     } catch (e) {
       setCalloutState({
         open: true,
@@ -94,6 +96,7 @@ export const File = ({ value, path }: Props) => {
     <div className="file-styles">
       <span onClick={handleDownloadFile}>--{value}</span>{" "}
       <img
+        data-testid={`delete-file-${path}`}
         className="delete-file-icon"
         alt="Delete file"
         src={DeleteFileIcon}

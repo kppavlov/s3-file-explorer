@@ -12,25 +12,17 @@ import {
 class S3 {
   private static instance: S3 | null = null;
 
-  private static accessKeyId: string = "AKIATOK7VIOCYL4L6EXY";
+  private static accessKeyId: string = "";
   private static accessKeySecret: string =
-    "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";
-  private static bucketName: string = "llib-236960695173-25";
-  private static region: string = "eu-west-1";
+    "";
+  private static bucketName: string = "";
+  private static region: string = "";
   private static s3ClientInstance: S3Client | null = null;
 
   constructor() {
     if (S3.instance !== null) {
       return S3.instance;
     }
-
-    S3.s3ClientInstance = new S3Client({
-      region: S3.region,
-      credentials: {
-        accessKeyId: S3.accessKeyId,
-        secretAccessKey: S3.accessKeySecret,
-      },
-    });
 
     S3.instance = this;
 

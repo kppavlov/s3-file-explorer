@@ -1,33 +1,34 @@
+import { ChangeEvent, useCallback, useRef, useState } from "react";
+
+// ICONS
 import UploadFileIcon from "../assets/upload-icon.png";
+
+// COMPONENTS
 import { Input } from "../components/input/input.tsx";
 import { Button } from "../components/button/Button.tsx";
 import { Popup } from "../components/popup/Popup.tsx";
+
+// TYPES
 import { InputState } from "./types.ts";
+
+// CLASSES
 import { DirectoryTreeNode, FileTreeNode } from "../classes/tree/tree.ts";
-import {
-  ChangeEvent,
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useRef,
-  useState,
-} from "react";
 import s3 from "../classes/s3-access/s3.ts";
-import { defaultInputState } from "./constants.ts";
+
+// HOOKS
 import { useFileExplorerStateSelectors } from "../state/file-explorer-state.tsx";
 
 export const CreateFilePopup = ({
   isOpen,
   dir,
-  setFileNameInputState,
   declineCreation,
 }: InputState & {
   dir: DirectoryTreeNode | FileTreeNode;
-  setFileNameInputState: Dispatch<SetStateAction<InputState>>;
   declineCreation: () => void;
 }) => {
   const setCalloutState = useFileExplorerStateSelectors.use.setCalloutState();
   const setPathToKeyMap = useFileExplorerStateSelectors.use.setPathToKeyMap();
+  const addNodeToTree = useFileExplorerStateSelectors.use.addNodeToTree();
 
   const inputCreateFileRef = useRef<HTMLInputElement | null>(null);
 
@@ -47,51 +48,49 @@ export const CreateFilePopup = ({
     const val = inputCreateFileRef.current?.files?.[0];
 
     if (!val) {
-      setFileNameInputState((prevState) => ({
-        ...prevState,
-        error: true,
-        errorText: "Please upload a single file!",
-      }));
+      setCalloutState({
+        open: true,
+        type: "error",
+        text: "Please upload a single file!",
+      });
+      return;
+    }
+
+    const hasDupNames = dir.nodes.some((nd) => nd.value === val.name);
+
+    if (hasDupNames) {
+      setCalloutState({
+        open: true,
+        type: "error",
+        text: "A file or folder with this name already exists!",
+      });
+      return;
+    }
+
+    // removes the bucket name from the path
+    const dirSplit = dir.path.split("/");
+    const objectPath = dirSplit.splice(2, dirSplit.length - 1).join("/");
+
+    try {
+      await s3.createObject(
+        val,
+        !objectPath ? val.name : `${objectPath}/${val.name}`,
+      );
+    } catch (e) {
+      setCalloutState({
+        open: true,
+        type: "error",
+        text: "We could not upload the file to S3!",
+      });
       return;
     }
 
     if (dir instanceof DirectoryTreeNode) {
-      const hasDupNames = dir.nodes.some((nd) => nd.value === val.name);
-
-      if (hasDupNames) {
-        setFileNameInputState((prevState) => ({
-          ...prevState,
-          isOpen: true,
-          error: true,
-          errorText: "A file or folder with this name already exists!",
-        }));
-        return;
-      }
-
-      // removes the bucket name from the path
-      const dirSplit = dir.path.split("/");
-      const objectPath = dirSplit.splice(2, dirSplit.length - 1).join("/");
-
-      try {
-        await s3.createObject(
-          val,
-          !objectPath ? val.name : `${objectPath}/${val.name}`,
-        );
-      } catch (e) {
-        setCalloutState({
-          open: true,
-          type: "error",
-          text: "We could not upload the file to S3!",
-        });
-        return;
-      }
-
       // adds new node to the parent node reference
       const nodeToAdd = new FileTreeNode(val.name, dir.path);
-      dir.addNode(nodeToAdd);
 
+      addNodeToTree(dir.path, nodeToAdd);
       setPathToKeyMap(dir.path, `${dir.path}/${val.name}`);
-      setFileNameInputState(defaultInputState);
       setCalloutState({
         open: true,
         type: "success",

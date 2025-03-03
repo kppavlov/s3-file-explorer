@@ -13,7 +13,7 @@ const sortFoldersFirst = (nodeA: Item, nodeB: Item) => {
   const isBDir = nodeB instanceof DirectoryTreeNode;
 
   if (isADir && !isBDir) return -1; // Directories come first
-  if (!isADir && isBDir) return 1;  // Files come after directories
+  if (!isADir && isBDir) return 1; // Files come after directories
 
   return nodeA.value.localeCompare(nodeB.value);
 };

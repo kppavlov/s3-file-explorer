@@ -1,5 +1,6 @@
-import "./callout.css";
 import { useEffect } from "react";
+
+import "./callout.css";
 
 export type CalloutProps = {
   open: boolean;
@@ -12,9 +13,10 @@ let delay: number | null = null;
 
 export const Callout = ({ text, open, type, onClose }: CalloutProps) => {
   useEffect(() => {
-    if (delay) {
+    if (!open || delay) {
       return;
     }
+
     delay = setTimeout(() => {
       onClose?.();
     }, 3000);
@@ -24,6 +26,7 @@ export const Callout = ({ text, open, type, onClose }: CalloutProps) => {
         return;
       }
       clearTimeout(delay);
+      delay = null;
     };
   }, [open]);
   if (!open) {
@@ -36,7 +39,9 @@ export const Callout = ({ text, open, type, onClose }: CalloutProps) => {
   return (
     <div className={`callout-styles ${errorClass} ${successClass}`}>
       <span>{text}</span>
-      <span className="callout-close-sign" onClick={onClose}>X</span>
+      <span className="callout-close-sign" onClick={onClose}>
+        X
+      </span>
     </div>
   );
 };

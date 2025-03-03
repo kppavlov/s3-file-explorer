@@ -1,5 +1,5 @@
 import "./App.css";
-import { BucketConfigForm } from "./components/bucket-config-form/BucketConfigForm.tsx";
+import { BucketConfigForm } from "./bucket-config-form/BucketConfigForm.tsx";
 import { CurrentWorkingDirectory } from "./current-working-directory/CurrentWorkingDirectory.tsx";
 import { FileExplorer } from "./file-explorer/FileExplorer.tsx";
 import { CalloutBox } from "./callout-box/CalloutBox.tsx";

@@ -1,23 +1,4 @@
-interface ITreeNode<Node> {
-  value: string;
-  path: string;
-  nodes: Node[];
-}
-
-interface IFileTreeNode extends ITreeNode<never> {
-  value: string;
-  clone: () => IFileTreeNode;
-}
-
-interface IDirectoryTreeNode
-  extends ITreeNode<DirectoryTreeNode | FileTreeNode> {
-  isCwd: boolean;
-  value: string;
-  nodes: (DirectoryTreeNode | FileTreeNode)[];
-  addNode(node: DirectoryTreeNode | FileTreeNode): void;
-  removeNode(value: (DirectoryTreeNode | FileTreeNode)["value"]): void;
-  clone: () => IDirectoryTreeNode;
-}
+import { IDirectoryTreeNode, IFileTreeNode } from "./types.ts";
 
 export class FileTreeNode implements IFileTreeNode {
   value = "";
@@ -89,33 +70,42 @@ export class FileSystemTree {
     this.root = value;
   }
 
-  removeNode(path: string) {
+  removeNode(path: string, removeBy: "path" | "value" = "value") {
     const pathSplit = path.split("/");
     pathSplit.pop();
     const parentPath = pathSplit.join("/");
     const parent = this.searchDfs(parentPath, "path");
 
     if (parent) {
-      (parent as DirectoryTreeNode).removeNode(path, "path");
+      (parent as DirectoryTreeNode).removeNode(path, removeBy);
     }
 
     return this;
   }
 
-  buildWholeTree(prefixes: Array<Array<string>>, cb: (path: string) => void) {
+  addNodeToPath(path: string, node: DirectoryTreeNode | FileTreeNode) {
+    const existingNode = this.searchDfs(path, "path");
+
+    if (existingNode && existingNode instanceof DirectoryTreeNode) {
+      existingNode.addNode(node);
+    }
+
+    return this;
+  }
+
+  buildWholeTree(prefixes: Array<Array<string>>) {
     if (!this.root) {
       return;
     }
 
     for (const prefix of prefixes) {
-      this.addNodesByPrefix(prefix, this.root, cb);
+      this.addNodesByPrefix(prefix, this.root);
     }
   }
 
   addNodesByPrefix(
     prefixes: Array<string>,
     node: DirectoryTreeNode | FileTreeNode,
-    cb: (path: string) => void,
   ) {
     let prevNode: DirectoryTreeNode | FileTreeNode | null = null;
     const prefixesLength = prefixes.length - 1;
@@ -126,14 +116,13 @@ export class FileSystemTree {
       }
 
       const existingNode = this.searchDfs(prefix);
-
       if (!existingNode && prefixesLength === idx) {
         const currentNode = node as DirectoryTreeNode;
         const fileNode = new FileTreeNode(prefix);
 
         if (prevNode && prevNode instanceof DirectoryTreeNode) {
           fileNode.path = `${prevNode.path}/${prefix}`;
-          cb(fileNode.path);
+
           prevNode.addNode(fileNode);
         } else {
           currentNode.addNode(fileNode);
@@ -146,11 +135,9 @@ export class FileSystemTree {
 
         if (prevNode && prevNode instanceof DirectoryTreeNode) {
           dirNode.path = `${prevNode.path}/${prefix}`;
-          cb(dirNode.path);
           prevNode.addNode(dirNode);
         } else {
           dirNode.path = `${currentNode.path}/${prefix}`;
-          cb(dirNode.path);
           currentNode.addNode(dirNode);
         }
 
@@ -159,6 +146,8 @@ export class FileSystemTree {
         prevNode = existingNode;
       }
     });
+
+    return this;
   }
 
   searchDfs(
@@ -178,10 +167,12 @@ export class FileSystemTree {
     if (value === root[searchBy]) {
       return root;
     }
+
     const children = root.nodes;
 
     for (let i = 0; i < children.length; i++) {
       const child = children[i];
+
       const nodeFound = this.search(value, child, searchBy);
       if (nodeFound) {
         return nodeFound;

@@ -1,5 +1,9 @@
 import { create, StoreApi, UseBoundStore } from "zustand";
-import { DirectoryTreeNode, FileSystemTree } from "../classes/tree/tree.ts";
+import {
+  DirectoryTreeNode,
+  FileSystemTree,
+  FileTreeNode,
+} from "../classes/tree/tree.ts";
 import { CalloutProps } from "../components/callout/Callout.tsx";
 
 interface TreeContextState {
@@ -8,6 +12,8 @@ interface TreeContextState {
   setSelectedCurrentWorkingDir: (path: string) => void;
   setPrerequisite: (contents: Array<Array<string>>, bucketName: string) => void;
   setPathToKeyMap: (...paths: string[]) => void;
+  deletePathToKeyMap: (paths: string) => void;
+  addNodeToTree: (path: string, node: DirectoryTreeNode | FileTreeNode) => void;
   setExpandedPaths: (path: string) => void;
   setCalloutState: (props: CalloutProps) => void;
   setTree: (tree: FileSystemTree) => void;
@@ -52,7 +58,11 @@ export const useFileExplorerState = create<TreeContextState>()((set) => ({
   },
   removeNodeFromTree: (path) =>
     set((state) => ({
-      tree: state.tree?.removeNode(path),
+      tree: state.tree?.removeNode(path, "path"),
+    })),
+  addNodeToTree: (path, node) =>
+    set((state) => ({
+      tree: state.tree?.addNodeToPath(path, node),
     })),
   setCalloutState: (calloutState) =>
     set(() => ({
@@ -71,6 +81,20 @@ export const useFileExplorerState = create<TreeContextState>()((set) => ({
       }
 
       return newState;
+    }),
+  deletePathToKeyMap: (path) =>
+    set((state) => {
+      const newPathToKeyMap = {
+        ...state.pathToKeyMap,
+      };
+
+      delete newPathToKeyMap[path];
+
+      return {
+        pathToKeyMap: {
+          ...newPathToKeyMap,
+        },
+      };
     }),
   setExpandedPaths: (path) =>
     set((state) => {

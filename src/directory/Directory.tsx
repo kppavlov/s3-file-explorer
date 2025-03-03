@@ -1,8 +1,6 @@
 import { useCallback, useState } from "react";
 import { DirectoryTreeNode, FileTreeNode } from "../classes/tree/tree.ts";
 
-import "./directory.css";
-
 // HOOKS
 import {
   selectSelectedCwdByPath,
@@ -13,6 +11,9 @@ import {
 // COMPONENTS
 import { DirectoryActions } from "./DirectoryActions.tsx";
 import { DirectoryItemList } from "./DirectoryItemList.tsx";
+
+// STYLES
+import "./directory.css";
 
 type Props = {
   showDirsOnly?: boolean;

@@ -1,9 +1,4 @@
-import {
-  PropsWithChildren,
-  useCallback,
-  useState,
-  useMemo,
-} from "react";
+import { PropsWithChildren, useCallback, useState, useMemo } from "react";
 
 // ICONS
 import ArrowDown from "../assets/arrow-down-icon.png";
@@ -18,7 +13,11 @@ import { useFileExplorerStateSelectors } from "../state/file-explorer-state.tsx"
 
 // TYPES
 import { InputState } from "./types.ts";
+
+// CONSTANTS
 import { defaultInputState } from "./constants.ts";
+
+// COMPONENTS
 import { CreateFolderPopup } from "./CreateFolderPopup.tsx";
 import { CreateFilePopup } from "./CreateFilePopup.tsx";
 
@@ -39,7 +38,7 @@ export const DirectoryActions = ({
   const setCalloutState = useFileExplorerStateSelectors.use.setCalloutState();
   const [folderNameInputState, setFolderNameInputState] =
     useState<InputState>(defaultInputState);
-  const [fileNameInputState, setFileNameInputState] =
+  const [fileCreationState, setFileCreationState] =
     useState<InputState>(defaultInputState);
   const shouldRemoveArrow = useMemo(() => {
     if (!showDirsOnly) {
@@ -57,7 +56,7 @@ export const DirectoryActions = ({
   }, []);
 
   const handleAddNewFile = useCallback(() => {
-    setFileNameInputState((prevState) => ({
+    setFileCreationState((prevState) => ({
       ...prevState,
       isOpen: true,
     }));
@@ -70,7 +69,7 @@ export const DirectoryActions = ({
       type: "success",
     });
     setFolderNameInputState(defaultInputState);
-    setFileNameInputState(defaultInputState);
+    setFileCreationState(defaultInputState);
   }, []);
 
   if (!dir) {
@@ -122,8 +121,7 @@ export const DirectoryActions = ({
       <CreateFilePopup
         dir={dir}
         declineCreation={declineCreation}
-        setFileNameInputState={setFileNameInputState}
-        {...fileNameInputState}
+        {...fileCreationState}
       />
     </>
   );

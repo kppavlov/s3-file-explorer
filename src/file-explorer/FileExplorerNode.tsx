@@ -1,4 +1,6 @@
 import { DirectoryTreeNode, FileTreeNode } from "../classes/tree/tree.ts";
+
+// COMPONENTS
 import { Directory } from "../directory/Directory.tsx";
 import { File } from "../file/File.tsx";
 
