@@ -121,7 +121,9 @@ export const CreateFilePopup = ({
 
         {readyForUploadFileName && <label>{readyForUploadFileName}</label>}
 
-        <Button onClick={createFile}>Upload</Button>
+        <Button disabled={!readyForUploadFileName} onClick={createFile}>
+          Upload
+        </Button>
 
         <Button onClick={declineCreation}>Decline</Button>
       </div>

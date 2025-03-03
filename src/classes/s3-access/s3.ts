@@ -4,6 +4,8 @@ import {
   PutObjectCommandInput,
   DeleteObjectCommand,
   DeleteObjectCommandInput,
+  GetObjectCommand,
+  GetObjectCommandInput,
   S3Client,
 } from "@aws-sdk/client-s3";
 
@@ -105,6 +107,18 @@ class S3 {
       Key: path,
     };
     return await S3.s3ClientInstance.send(new DeleteObjectCommand(input));
+  }
+
+  static async getObject(path: string) {
+    if (!S3.s3ClientInstance) {
+      throw new Error("No s3ClientInstance found.");
+    }
+
+    const input: GetObjectCommandInput = {
+      Bucket: S3.bucketName,
+      Key: path,
+    };
+    return await S3.s3ClientInstance.send(new GetObjectCommand(input));
   }
 }
 

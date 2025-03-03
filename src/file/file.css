@@ -4,6 +4,8 @@
   display: flex;
   gap: 0.5rem;
   align-items: center;
+  text-decoration: underline;
+  cursor: pointer;
 
   .delete-file-icon {
     cursor: pointer;

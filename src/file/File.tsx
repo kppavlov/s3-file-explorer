@@ -67,9 +67,32 @@ export const File = ({ value, path }: Props) => {
     setOpenPopup(false);
   }, []);
 
+  const handleDownloadFile = useCallback(async () => {
+    const pathSplit = path.split("/");
+    const objectPath = [...pathSplit].splice(2, pathSplit.length - 1).join("/");
+    const valueToGet = !objectPath ? value : objectPath;
+
+    try {
+      const objData = await s3.getObject(valueToGet);
+      const bytes = await objData.Body.transformToByteArray();
+      const blob = window.URL.createObjectURL(new Blob(bytes));
+      const anchor = document.createElement("a");
+      anchor.href = blob;
+      anchor.download = value;
+      anchor.click();
+      window.URL.revokeObjectURL(blob);
+    } catch (e) {
+      setCalloutState({
+        open: true,
+        type: "error",
+        text: "Something went wrong downloading your file!",
+      });
+    }
+  }, []);
+
   return (
     <div className="file-styles">
-      --{value}{" "}
+      <span onClick={handleDownloadFile}>--{value}</span>{" "}
       <img
         className="delete-file-icon"
         alt="Delete file"

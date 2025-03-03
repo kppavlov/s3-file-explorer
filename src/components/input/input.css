@@ -5,6 +5,7 @@
 
   .label-error {
     color: darkred;
+    font-size: .8rem;
   }
 
   input {
