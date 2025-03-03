@@ -1,13 +1,7 @@
-import { ComponentType } from "react";
-import { Directory } from "../../components/directory/Directory.tsx";
-import { File } from "../../components/file/File.tsx";
-
 interface ITreeNode<Node> {
   value: string;
   path: string;
   nodes: Node[];
-  componentKey: string;
-  Component: ComponentType<{ value: string; data: Node }>;
 }
 
 interface IFileTreeNode extends ITreeNode<never> {
@@ -29,8 +23,6 @@ export class FileTreeNode implements IFileTreeNode {
   value = "";
   path = "";
   nodes = [];
-  componentKey = crypto.randomUUID();
-  Component = File;
 
   constructor(value: string, parentPath = "") {
     this.value = value;
@@ -51,8 +43,6 @@ export class DirectoryTreeNode implements IDirectoryTreeNode {
   value: IDirectoryTreeNode["value"] = "";
   nodes: (DirectoryTreeNode | FileTreeNode)[] = [];
   path = "";
-  componentKey = crypto.randomUUID();
-  Component = Directory;
 
   constructor(value: string, parentPath = "") {
     this.value = value;
@@ -64,8 +54,8 @@ export class DirectoryTreeNode implements IDirectoryTreeNode {
     this.nodes.push(node);
   }
 
-  removeNode(value: string) {
-    this.nodes = this.nodes.filter((node) => node.value !== value);
+  removeNode(value: string, removeBy: "value" | "path" = "value") {
+    this.nodes = this.nodes.filter((node) => node[removeBy] !== value);
   }
 
   clone() {
@@ -99,68 +89,17 @@ export class FileSystemTree {
     this.root = value;
   }
 
-  updateNode(value: string, newNode: DirectoryTreeNode | FileTreeNode) {
-    if (!this.root) {
-      return null;
-    }
+  removeNode(path: string) {
+    const pathSplit = path.split("/");
+    pathSplit.pop();
+    const parentPath = pathSplit.join("/");
+    const parent = this.searchDfs(parentPath, "path");
 
-    this.replaceNode(this.root.nodes, newNode, value);
+    if (parent) {
+      (parent as DirectoryTreeNode).removeNode(path, "path");
+    }
 
     return this;
-  }
-
-  replaceNode(
-    nodes: (DirectoryTreeNode | FileTreeNode)[],
-    newNode: DirectoryTreeNode | FileTreeNode,
-    value: string,
-    searchBy: "value" | "path" = "value",
-  ) {
-    const children = nodes;
-
-    for (let i = 0; i < children.length; i++) {
-      const child = children[i];
-
-      if (child[searchBy] === value) {
-        children[i] = newNode;
-        return true;
-      }
-
-      const found = this.replaceNode(child.nodes, newNode, value, searchBy);
-
-      if (found) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  clone() {
-    if (!this.root) {
-      return new FileSystemTree();
-    }
-
-    const newTree = new FileSystemTree(new DirectoryTreeNode(this.root.value));
-
-    const { nodes } = this.root;
-
-    for (const node of nodes) {
-      newTree.root?.addNode(this.cloneNode(node));
-    }
-
-    return newTree;
-  }
-
-  private cloneNode(node: DirectoryTreeNode | FileTreeNode) {
-    if (node instanceof FileTreeNode) {
-      return node.clone();
-    }
-
-    const clonedNode = node.clone();
-    const self = this;
-    clonedNode.nodes = node.nodes.map((nd) => self.cloneNode(nd));
-
-    return clonedNode;
   }
 
   buildWholeTree(prefixes: Array<Array<string>>, cb: (path: string) => void) {
@@ -182,6 +121,10 @@ export class FileSystemTree {
     const prefixesLength = prefixes.length - 1;
 
     prefixes.forEach((prefix, idx) => {
+      if (!prefix) {
+        return;
+      }
+
       const existingNode = this.searchDfs(prefix);
 
       if (!existingNode && prefixesLength === idx) {

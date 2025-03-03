@@ -3,7 +3,7 @@
   min-height: 20px;
 
   .current-working-directory {
-    font-weight: bold;
+    text-decoration: underline;
   }
 
   .value-actions {
@@ -17,8 +17,8 @@
     }
 
     .arrow {
-      width: 15px;
-      height: 15px;
+      width: 1rem;
+      height: 1rem;
       cursor: pointer;
     }
 
@@ -34,14 +34,15 @@
       margin: 0;
       width: fit-content;
       cursor: pointer;
+      font-weight: bold;
     }
 
     .img-hover-effect {
-      width: 15px;
-      height: 1px;
+      width: 1rem;
+      height: 0;
       cursor: pointer;
       opacity: 0;
-      transition: all 0.3s ease;
+      transition: height 0.3s ease;
       margin-left: 0.5rem;
     }
   }
@@ -53,8 +54,15 @@
 
   .input-actions {
     display: flex;
-    gap: 0.5rem;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
+    gap: 1rem;
+    width: 10rem;
+
+    .upload-file-icon {
+      cursor: pointer;
+    }
   }
 
   .input-actions > button {

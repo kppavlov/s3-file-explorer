@@ -1,4 +1,4 @@
-import { DirectoryTreeNode, FileTreeNode } from "../../classes/tree/tree.ts";
+import { DirectoryTreeNode, FileTreeNode } from "../classes/tree/tree.ts";
 import { Directory } from "../directory/Directory.tsx";
 import { File } from "../file/File.tsx";
 
@@ -16,5 +16,5 @@ export const FileExplorerNode = ({ node, showDirsOnly }: NodeProps) => {
     return null;
   }
 
-  return <File value={node.value} />;
+  return <File value={node.value} path={node.path} />;
 };

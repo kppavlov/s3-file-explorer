@@ -1,29 +1,24 @@
 import { create, StoreApi, UseBoundStore } from "zustand";
-import {
-  DirectoryTreeNode,
-  FileSystemTree,
-  FileTreeNode,
-} from "../classes/tree/tree.ts";
+import { DirectoryTreeNode, FileSystemTree } from "../classes/tree/tree.ts";
+import { CalloutProps } from "../components/callout/Callout.tsx";
 
 interface TreeContextState {
   currentWorkingDir: DirectoryTreeNode | null;
   setCurrentWorkingDir: (props: DirectoryTreeNode | null) => void;
   setSelectedCurrentWorkingDir: (path: string) => void;
-  setContents: (contents: Array<Array<string>>) => void;
-  setBucketName: (bucketName: string) => void;
-  setTree: (tree: FileSystemTree | null) => void;
+  setPrerequisite: (contents: Array<Array<string>>, bucketName: string) => void;
   setPathToKeyMap: (...paths: string[]) => void;
   setExpandedPaths: (path: string) => void;
-  updateTreePath: (
-    path: string,
-    newNode: FileTreeNode | DirectoryTreeNode,
-  ) => void;
+  setCalloutState: (props: CalloutProps) => void;
+  setTree: (tree: FileSystemTree) => void;
+  removeNodeFromTree: (path: string) => void;
   contents: Array<Array<string>>;
   bucketName: string;
   selectedCurrentWorkingDir: string;
   tree: FileSystemTree | null;
   pathToKeyMap: Record<string, string>;
   expandedPaths: Set<string>;
+  calloutState: CalloutProps;
 }
 
 type WithSelectors<S> = S extends { getState: () => infer T }
@@ -50,6 +45,19 @@ export const useFileExplorerState = create<TreeContextState>()((set) => ({
   selectedCurrentWorkingDir: "",
   pathToKeyMap: {},
   expandedPaths: new Set<string>(),
+  calloutState: {
+    text: "",
+    type: "success",
+    open: false,
+  },
+  removeNodeFromTree: (path) =>
+    set((state) => ({
+      tree: state.tree?.removeNode(path),
+    })),
+  setCalloutState: (calloutState) =>
+    set(() => ({
+      calloutState,
+    })),
   setPathToKeyMap: (...paths) =>
     set((state) => {
       const newState = {
@@ -81,10 +89,6 @@ export const useFileExplorerState = create<TreeContextState>()((set) => ({
     set(() => ({
       selectedCurrentWorkingDir: path,
     })),
-  updateTreePath: (path: string, newNode: FileTreeNode | DirectoryTreeNode) =>
-    set((state) => ({
-      tree: state.tree?.updateNode(path, newNode),
-    })),
   setTree: (tree) =>
     set(() => ({
       tree,
@@ -93,25 +97,20 @@ export const useFileExplorerState = create<TreeContextState>()((set) => ({
     set(() => ({
       currentWorkingDir: directory,
     })),
-  setContents: (contents) =>
+  setPrerequisite: (contents, bucketName) =>
     set(() => ({
       contents,
-    })),
-  setBucketName: (bucketName) =>
-    set(() => ({
       bucketName,
     })),
 }));
 
 export const useFileExplorerStateSelectors =
   createSelectors(useFileExplorerState);
-export const pathLevelDirectorySubscription = (path: string) =>
-  useFileExplorerState((state) => state.tree?.searchDfs(path, "path"));
-export const pathLevelCwdSubscription = (path: string) =>
+export const selectSelectedCwdByPath = (path: string) =>
   useFileExplorerState((state) =>
     state.selectedCurrentWorkingDir === path
       ? state.selectedCurrentWorkingDir
       : null,
   );
-export const pathLevelKeySubscription = (path: string) =>
+export const selectKeyToUpdateByPath = (path: string) =>
   useFileExplorerState((state) => state.pathToKeyMap[path]);

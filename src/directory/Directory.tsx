@@ -1,14 +1,14 @@
 import { useCallback, useState } from "react";
-import { DirectoryTreeNode, FileTreeNode } from "../../classes/tree/tree.ts";
+import { DirectoryTreeNode, FileTreeNode } from "../classes/tree/tree.ts";
 
 import "./directory.css";
 
 // HOOKS
 import {
-  pathLevelCwdSubscription,
-  pathLevelKeySubscription,
+  selectSelectedCwdByPath,
+  selectKeyToUpdateByPath,
   useFileExplorerStateSelectors,
-} from "../../state/file-explorer-state.tsx";
+} from "../state/file-explorer-state.tsx";
 
 // COMPONENTS
 import { DirectoryActions } from "./DirectoryActions.tsx";
@@ -24,8 +24,8 @@ export const Directory = ({ data, showDirsOnly = false }: Props) => {
   const setCwd = useFileExplorerStateSelectors.use.setCurrentWorkingDir();
   const setSelectedCurrentWorkingDir =
     useFileExplorerStateSelectors.use.setSelectedCurrentWorkingDir();
-  const currentWorkingDir = pathLevelCwdSubscription(path);
-  const keyToUse = pathLevelKeySubscription(path);
+  const currentWorkingDir = selectSelectedCwdByPath(path);
+  const keyToUse = selectKeyToUpdateByPath(path);
   const [expanded, setExpanded] = useState(false);
 
   const handleCWDCreation = () => {

@@ -13,45 +13,44 @@ import "./bucket-config-form.css";
 // HOOKS
 import { useFileExplorerStateSelectors } from "../../state/file-explorer-state.tsx";
 
-export const BucketConfigForm = memo(() => {
-  const setBucketName = useFileExplorerStateSelectors.use.setBucketName();
-  const setContents = useFileExplorerStateSelectors.use.setContents();
+// TYPES
+import { S3FormState } from "./types.ts";
 
-  const [_, dispatch, isPending] = useActionState<unknown, FormData>(
-    async (_, _$) => {
-      // const bucket-config-form = Object.fromEntries(payload) as S3FormState;
+export const BucketConfigForm = memo(() => {
+  const setPrerequisite = useFileExplorerStateSelectors.use.setPrerequisite();
+  const setCalloutState = useFileExplorerStateSelectors.use.setCalloutState();
+
+  const [state, dispatch, isPending] = useActionState<S3FormState, FormData>(
+    async (formState, payload) => {
+      const { bucketName, region, accessKeySecret, accessKeyId } =
+        Object.fromEntries(payload) as S3FormState;
+
       try {
         const s3CurrentObjects = await S3.setProperties({
-          accessKeyId: "AKIATOK7VIOCYL4L6EXY",
-          bucketName: "llib-236960695173-25",
-          accessKeySecret: "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",
-          region: "eu-west-1",
+          accessKeyId: accessKeyId || "AKIATOK7VIOCYL4L6EXY",
+          bucketName: bucketName || "llib-236960695173-25",
+          accessKeySecret:
+            accessKeySecret || "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",
+          region: region || "eu-west-1",
         }).listObjects();
-        // const s3CurrentAddedObject = await S3.getInstance().createObject(
-        //   new Blob(["Tralala"]),
-        // );
-        // console.log(s3CurrentObjects?.Contents);
-        // console.log(
-        //   doTree(
-        //     s3CurrentObjects?.Contents?.map(({ Key }) =>
-        //       (Key ?? "").split("/"),
-        //     ) ?? [],
-        //   ),
-        // );
 
-        setBucketName("llib-236960695173-25");
-        setContents(
+        const contents =
           s3CurrentObjects?.Contents?.map(({ Key }) =>
             (Key ?? "").split("/"),
-          ) ?? [],
-        );
+          ) ?? [];
 
-        return;
+        setPrerequisite(contents, bucketName || "llib-236960695173-25");
+
+        return formState;
       } catch (err) {
         const msg = err as Error;
-
+        setCalloutState({
+          type: "error",
+          text: "Something went wrong when fetching S3 data!",
+          open: true,
+        });
         return {
-          ..._,
+          ...formState,
           error: msg?.message ?? "",
         };
       }
@@ -61,13 +60,15 @@ export const BucketConfigForm = memo(() => {
       bucketName: "llib-236960695173-25",
       accessKeySecret: "y3ZTASlIj1W/5Z/hDpVwzP+mhzA97acKw0vODLL4",
       region: "eu-west-1",
-      contents: [],
     },
   );
 
+  const { bucketName, region, accessKeySecret, accessKeyId} = state;
+  const shouldDisableButton = !bucketName || !region || !accessKeyId || !accessKeySecret || isPending;
+
   return (
     <>
-      <form action={dispatch} className={"form-styles"}>
+      <form action={dispatch} className="form-styles">
         <Input name="accessKeySecret" label="Access key secret" />
 
         <Input name="accessKeyId" label="Access key id" />
@@ -76,7 +77,7 @@ export const BucketConfigForm = memo(() => {
 
         <Input name="region" label="Region" />
 
-        <Button disabled={isPending} type="submit">
+        <Button disabled={shouldDisableButton} type="submit">
           Connect to S3
         </Button>
       </form>

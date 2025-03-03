@@ -1,0 +1,130 @@
+import {
+  PropsWithChildren,
+  useCallback,
+  useState,
+  useMemo,
+} from "react";
+
+// ICONS
+import ArrowDown from "../assets/arrow-down-icon.png";
+import NewFolderIcon from "../assets/new-folder-icon.png";
+import NewFileIcon from "../assets/new-file-icon.png";
+
+// CLASSES
+import { DirectoryTreeNode, FileTreeNode } from "../classes/tree/tree.ts";
+
+// HOOKS
+import { useFileExplorerStateSelectors } from "../state/file-explorer-state.tsx";
+
+// TYPES
+import { InputState } from "./types.ts";
+import { defaultInputState } from "./constants.ts";
+import { CreateFolderPopup } from "./CreateFolderPopup.tsx";
+import { CreateFilePopup } from "./CreateFilePopup.tsx";
+
+type Props = {
+  showDirsOnly: boolean;
+  expanded: boolean;
+  handleExpandDir: () => void;
+  dir?: DirectoryTreeNode | FileTreeNode | null;
+};
+
+export const DirectoryActions = ({
+  children,
+  showDirsOnly,
+  handleExpandDir,
+  expanded,
+  dir,
+}: PropsWithChildren<Props>) => {
+  const setCalloutState = useFileExplorerStateSelectors.use.setCalloutState();
+  const [folderNameInputState, setFolderNameInputState] =
+    useState<InputState>(defaultInputState);
+  const [fileNameInputState, setFileNameInputState] =
+    useState<InputState>(defaultInputState);
+  const shouldRemoveArrow = useMemo(() => {
+    if (!showDirsOnly) {
+      return dir?.nodes.length === 0;
+    }
+
+    return dir?.nodes.every((nd) => nd instanceof FileTreeNode);
+  }, [dir]);
+
+  const handleAddNewDirectory = useCallback(() => {
+    setFolderNameInputState((prevState) => ({
+      ...prevState,
+      isOpen: true,
+    }));
+  }, []);
+
+  const handleAddNewFile = useCallback(() => {
+    setFileNameInputState((prevState) => ({
+      ...prevState,
+      isOpen: true,
+    }));
+  }, []);
+
+  const declineCreation = useCallback(() => {
+    setCalloutState({
+      open: false,
+      text: "",
+      type: "success",
+    });
+    setFolderNameInputState(defaultInputState);
+    setFileNameInputState(defaultInputState);
+  }, []);
+
+  if (!dir) {
+    return null;
+  }
+
+  return (
+    <>
+      <div className="value-actions">
+        {!shouldRemoveArrow ? (
+          <img
+            className={`arrow ${expanded ? "expand-arrow" : "collapse-arrow"}`}
+            alt="Collapse/expand image"
+            src={ArrowDown}
+            onClick={handleExpandDir}
+          />
+        ) : (
+          <div className="arrow-filler"></div>
+        )}
+
+        {children}
+
+        {!showDirsOnly && (
+          <>
+            <img
+              className="img-hover-effect"
+              alt="New file icon"
+              src={NewFolderIcon}
+              onClick={handleAddNewDirectory}
+            />
+
+            <img
+              className="img-hover-effect"
+              alt="New file icon"
+              src={NewFileIcon}
+              onClick={handleAddNewFile}
+            />
+          </>
+        )}
+      </div>
+
+      <CreateFolderPopup
+        {...folderNameInputState}
+        declineCreation={declineCreation}
+        setFolderNameInputState={setFolderNameInputState}
+        dir={dir}
+      />
+
+      <CreateFilePopup
+        dir={dir}
+        declineCreation={declineCreation}
+        setFileNameInputState={setFileNameInputState}
+        {...fileNameInputState}
+      />
+    </>
+  );
+};

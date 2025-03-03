@@ -1,7 +1,8 @@
 import "./App.css";
 import { BucketConfigForm } from "./components/bucket-config-form/BucketConfigForm.tsx";
-import { CurrentWorkingDirectory } from "./components/current-working-directory/CurrentWorkingDirectory.tsx";
-import { FileExplorer } from "./components/file-explorer/FileExplorer.tsx";
+import { CurrentWorkingDirectory } from "./current-working-directory/CurrentWorkingDirectory.tsx";
+import { FileExplorer } from "./file-explorer/FileExplorer.tsx";
+import { CalloutBox } from "./callout-box/CalloutBox.tsx";
 
 function App() {
   return (
@@ -19,6 +20,8 @@ function App() {
 
         <CurrentWorkingDirectory />
       </div>
+
+      <CalloutBox />
     </>
   );
 }

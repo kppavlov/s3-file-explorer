@@ -1,8 +1,9 @@
 {
-  "name": "lucid-link",
+  "name": "file-explorer",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "repository": "https://github.com/kppavlov/s3-file-explorer",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

@@ -1,7 +1,9 @@
 import {
-  ListObjectsCommand,
+  ListObjectsV2Command,
   PutObjectCommand,
   PutObjectCommandInput,
+  DeleteObjectCommand,
+  DeleteObjectCommandInput,
   S3Client,
 } from "@aws-sdk/client-s3";
 
@@ -73,7 +75,7 @@ class S3 {
     }
 
     return await S3.s3ClientInstance.send(
-      new ListObjectsCommand({
+      new ListObjectsV2Command({
         Bucket: S3.bucketName,
       }),
     );
@@ -91,6 +93,18 @@ class S3 {
       ContentType: file.type,
     };
     return await S3.s3ClientInstance.send(new PutObjectCommand(input));
+  }
+
+  static async deleteObject(path: string) {
+    if (!S3.s3ClientInstance) {
+      throw new Error("No s3ClientInstance found.");
+    }
+
+    const input: DeleteObjectCommandInput = {
+      Bucket: S3.bucketName,
+      Key: path,
+    };
+    return await S3.s3ClientInstance.send(new DeleteObjectCommand(input));
   }
 }
 
