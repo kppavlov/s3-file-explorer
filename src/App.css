@@ -6,5 +6,7 @@
 
 .fs-tree {
   min-width: 200px;
-
+  height: min-content;
+  border: 1px solid var(--border-color);
+  padding: 0.5rem;
 }

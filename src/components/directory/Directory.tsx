@@ -1,85 +1,65 @@
-import { useState } from "react";
-import { FileTreeNode } from "../../classes/tree/tree.ts";
-
-import "./directory.css";
+import { useCallback, useState } from "react";
+import { DirectoryTreeNode, FileTreeNode } from "../../classes/tree/tree.ts";
 
 // HOOKS
 import {
-  pathLevelCwdSubscription,
-  pathLevelDirectorySubscription,
+  selectSelectedCwdByPath,
+  selectKeyToUpdateByPath,
   useFileExplorerStateSelectors,
 } from "../../state/file-explorer-state.tsx";
 
 // COMPONENTS
 import { DirectoryActions } from "./DirectoryActions.tsx";
+import { DirectoryItemList } from "./DirectoryItemList.tsx";
+
+// STYLES
+import "./directory.css";
 
 type Props = {
-  value: string;
-  path: string;
   showDirsOnly?: boolean;
+  data: DirectoryTreeNode | FileTreeNode;
 };
 
-export const Directory = ({ value, path, showDirsOnly = false }: Props) => {
+export const Directory = ({ data, showDirsOnly = false }: Props) => {
+  const { path, value, nodes } = data;
   const setCwd = useFileExplorerStateSelectors.use.setCurrentWorkingDir();
   const setSelectedCurrentWorkingDir =
     useFileExplorerStateSelectors.use.setSelectedCurrentWorkingDir();
-  const dir = pathLevelDirectorySubscription(path);
-  const selectedCurrentWorkingDirPath = pathLevelCwdSubscription(path);
+  const currentWorkingDir = selectSelectedCwdByPath(path);
+  const keyToUse = selectKeyToUpdateByPath(path);
   const [expanded, setExpanded] = useState(false);
 
   const handleCWDCreation = () => {
-    if (!dir || !showDirsOnly || dir instanceof FileTreeNode) {
+    if (!data || !showDirsOnly || data instanceof FileTreeNode) {
       return;
     }
 
-    setSelectedCurrentWorkingDir(dir.path);
-    setCwd(dir);
+    setSelectedCurrentWorkingDir(path);
+    setCwd(data);
   };
 
-  const handleExpandDir = () => {
+  const handleExpandDir = useCallback(() => {
     setExpanded((prev) => !prev);
-  };
+  }, []);
 
   return (
-    <div className="directory-styles">
+    <div className="directory-styles" id={path} key={keyToUse}>
       <DirectoryActions
         handleExpandDir={handleExpandDir}
         showDirsOnly={showDirsOnly}
         expanded={expanded}
-        dir={dir}
+        dir={data}
       >
         <p
-          className={`${dir?.path === selectedCurrentWorkingDirPath ? "current-working-directory" : ""}`}
+          className={`${path === currentWorkingDir ? "current-working-directory" : ""}`}
           onDoubleClick={handleCWDCreation}
         >
-          {dir?.value}
+          {value}
         </p>
       </DirectoryActions>
 
       {expanded && (
-        <ul className="nodes-wrapper">
-          {dir?.nodes?.map((node) => {
-            const {
-              path: currNodePath,
-              value: currNodeValue,
-              Component,
-            } = node;
-
-            if (showDirsOnly && node instanceof FileTreeNode) {
-              return null;
-            }
-
-            return (
-              <li key={value + currNodePath}>
-                <Component
-                  value={currNodeValue}
-                  path={currNodePath}
-                  showDirsOnly={showDirsOnly}
-                />
-              </li>
-            );
-          })}
-        </ul>
+        <DirectoryItemList items={nodes} showDirsOnly={showDirsOnly} />
       )}
     </div>
   );

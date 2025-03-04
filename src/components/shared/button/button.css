@@ -1,5 +1,6 @@
 .button-styles {
   border-radius: 8px;
+  min-height: 2rem;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
@@ -9,6 +10,12 @@
   color: #f9f9f9;
   cursor: pointer;
   transition: border-color 0.25s;
+  width: 100%;
+}
+
+.button-styles:disabled {
+  opacity: 0.8;
+  cursor: not-allowed;
 }
 
 .button-styles:hover {

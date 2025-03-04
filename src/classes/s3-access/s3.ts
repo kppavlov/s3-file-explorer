@@ -1,32 +1,28 @@
 import {
-  ListObjectsCommand,
+  ListObjectsV2Command,
   PutObjectCommand,
   PutObjectCommandInput,
+  DeleteObjectCommand,
+  DeleteObjectCommandInput,
+  GetObjectCommand,
+  GetObjectCommandInput,
   S3Client,
 } from "@aws-sdk/client-s3";
 
 class S3 {
   private static instance: S3 | null = null;
 
-  private static accessKeyId: string = "AKIATOK7VIOCYL4L6EXY";
+  private static accessKeyId: string = "";
   private static accessKeySecret: string =
-    "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";
-  private static bucketName: string = "llib-236960695173-25";
-  private static region: string = "eu-west-1";
+    "";
+  private static bucketName: string = "";
+  private static region: string = "";
   private static s3ClientInstance: S3Client | null = null;
 
   constructor() {
     if (S3.instance !== null) {
       return S3.instance;
     }
-
-    S3.s3ClientInstance = new S3Client({
-      region: S3.region,
-      credentials: {
-        accessKeyId: S3.accessKeyId,
-        secretAccessKey: S3.accessKeySecret,
-      },
-    });
 
     S3.instance = this;
 
@@ -73,7 +69,7 @@ class S3 {
     }
 
     return await S3.s3ClientInstance.send(
-      new ListObjectsCommand({
+      new ListObjectsV2Command({
         Bucket: S3.bucketName,
       }),
     );
@@ -91,6 +87,30 @@ class S3 {
       ContentType: file.type,
     };
     return await S3.s3ClientInstance.send(new PutObjectCommand(input));
+  }
+
+  static async deleteObject(path: string) {
+    if (!S3.s3ClientInstance) {
+      throw new Error("No s3ClientInstance found.");
+    }
+
+    const input: DeleteObjectCommandInput = {
+      Bucket: S3.bucketName,
+      Key: path,
+    };
+    return await S3.s3ClientInstance.send(new DeleteObjectCommand(input));
+  }
+
+  static async getObject(path: string) {
+    if (!S3.s3ClientInstance) {
+      throw new Error("No s3ClientInstance found.");
+    }
+
+    const input: GetObjectCommandInput = {
+      Bucket: S3.bucketName,
+      Key: path,
+    };
+    return await S3.s3ClientInstance.send(new GetObjectCommand(input));
   }
 }
 

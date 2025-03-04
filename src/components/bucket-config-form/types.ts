@@ -3,6 +3,10 @@ export type S3FormState = {
   accessKeyId: string;
   bucketName: string;
   region: string;
-  contents: Array<Array<string>>;
   error?: string;
-}
+};
+
+export type ContentTypes = {
+  contentsForPrerequisite: Array<Array<string>>;
+  contentsForPathToKeyMap: Array<string>;
+};

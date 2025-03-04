@@ -1,50 +1,31 @@
-# React + TypeScript + Vite
+# How to start the project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Just run `npm run dev` and the development server will start.
 
-Currently, two official plugins are available:
+To build the project then `npm run build`.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+To prettify `npm run prettier:write`.
 
-## Expanding the ESLint configuration
+# Datastructures
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+The datastructures picked to represent the FS is Tree. Unfortunately it is not a flat structure, so it has its own complications in terms of the React`s rendering efficiency.
+I came up with a workaround so that it re-renders only the parts that really change.
 
-- Configure the top-level `parserOptions` property like this:
+# State management
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+I chose to use Zustand. It is a lightweight state management hooks library. It allows you to subscribe to changes to a specific property in the whole state
+which minimizes the re-rendering when state changes where this could not be done with React`s context.
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+# Testing library
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+As I am using Vite for project scaffolding and building I installed the Vitest for the unit tests of the application.
+The tests written cover only the most critical part of the app, the CRUD operations and a couple of other userflows.
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+# What is NOT implemented
+
+1. I did not persist the S3 bucket`s secret as it is not secured in the browser, so this will not work.
+2. I did not implement the lazy fetching of directories because of simplicity.
+
+
+
+
