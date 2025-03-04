@@ -51,7 +51,7 @@ describe("File Component", () => {
     await waitFor(() => {
       expect(
         screen.getByText(
-          "Are you sure you want to delete file: /root/folder/test-file.txt?",
+          "Are you sure you want to delete file: test-file.txt?",
         ),
       ).toBeInTheDocument();
     });
@@ -101,7 +101,7 @@ describe("File Component", () => {
   });
 
   it("should show error callout if S3 deleteObject fails", async () => {
-    s3.deleteObject.mockRejectedValue(new Error("Delete failed"));
+    vi.mocked(s3.deleteObject).mockRejectedValue(new Error("Delete failed"));
 
     renderFile("test-file.txt", "/root/folder/test-file.txt");
 
