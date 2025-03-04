@@ -80,12 +80,12 @@ export const File = ({ value, path }: Props) => {
     const valueToGet = !objectPath ? value : objectPath;
 
     try {
-      console.log("calling this thing???");
+
       const objData = await s3.getObject(valueToGet);
       const bytes = await objData.Body.transformToByteArray();
       makeBrowserDownloadFile(bytes, value);
     } catch (e) {
-      console.log("rejected???", e);
+
       setCalloutState({
         open: true,
         type: "error",
@@ -106,7 +106,7 @@ export const File = ({ value, path }: Props) => {
       />
       <Popup open={openPopup}>
         <div className="delete-file-popup-content">
-          <Title>Are you sure you want to delete file: {path}?</Title>
+          <Title>Are you sure you want to delete file: {value}?</Title>
 
           <Button onClick={handleDeleteFile}>Delete</Button>
           <Button onClick={handleCloseConfirmPopup}>Decline</Button>
