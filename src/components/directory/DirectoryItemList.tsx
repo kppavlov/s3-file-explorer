@@ -1,4 +1,4 @@
-import { DirectoryTreeNode, FileTreeNode } from "../classes/tree/tree.ts";
+import { DirectoryTreeNode, FileTreeNode } from "../../classes/tree/tree.ts";
 import { FileExplorerNode } from "../file-explorer/FileExplorerNode.tsx";
 
 type Item = DirectoryTreeNode | FileTreeNode;

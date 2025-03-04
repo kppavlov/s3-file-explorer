@@ -7,18 +7,18 @@ import {
 } from "react";
 
 // COMPONENTS
-import { Input } from "../components/input/input.tsx";
-import { Button } from "../components/button/Button.tsx";
-import { Popup } from "../components/popup/Popup.tsx";
+import { Input } from "../shared/input/input.tsx";
+import { Button } from "../shared/button/Button.tsx";
+import { Popup } from "../shared/popup/Popup.tsx";
 
 // TYPES
 import { InputState } from "./types.ts";
 
 // CLASSES
-import { DirectoryTreeNode, FileTreeNode } from "../classes/tree/tree.ts";
+import { DirectoryTreeNode, FileTreeNode } from "../../classes/tree/tree.ts";
 
 // HOOKS
-import { useFileExplorerStateSelectors } from "../state/file-explorer-state.tsx";
+import { useFileExplorerStateSelectors } from "../../state/file-explorer-state.tsx";
 
 // CONSTANTS
 import { defaultInputState } from "./constants.ts";

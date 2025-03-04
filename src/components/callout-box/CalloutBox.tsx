@@ -1,6 +1,6 @@
 import { useCallback } from "react";
-import { Callout } from "../components/callout/Callout.tsx";
-import { useFileExplorerStateSelectors } from "../state/file-explorer-state.tsx";
+import { Callout } from "../shared/callout/Callout.tsx";
+import { useFileExplorerStateSelectors } from "../../state/file-explorer-state.tsx";
 
 export const CalloutBox = () => {
   const calloutProps = useFileExplorerStateSelectors.use.calloutState();

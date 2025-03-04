@@ -1,7 +1,7 @@
 import { describe, it, vi, beforeEach, expect, afterEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
-import { File } from "./File";
-import s3 from "../classes/s3-access/s3";
+import { File } from "./File.tsx";
+import s3 from "../../classes/s3-access/s3.ts";
 
 // Mock all the external dependencies (Zustand selectors and S3 service)
 const mockSetCalloutState = vi.fn();
@@ -9,7 +9,8 @@ const mockSetPathToKeyMap = vi.fn();
 const mockRemoveNodeFromTree = vi.fn();
 const mockAddNodeToTree = vi.fn();
 const mockDeletePathToKeyMap = vi.fn();
-vi.mock("../state/file-explorer-state", () => ({
+
+vi.mock("../../state/file-explorer-state", () => ({
   useFileExplorerStateSelectors: {
     use: {
       setCalloutState: vi.fn(() => mockSetCalloutState),
@@ -112,12 +113,10 @@ describe("File Component", () => {
       deleteButton.click();
     });
 
-    await waitFor(() => {
-      expect(mockSetCalloutState).toHaveBeenCalledWith({
-        open: true,
-        type: "error",
-        text: "Something went wrong deleting your file!",
-      });
+    expect(mockSetCalloutState).toHaveBeenCalledWith({
+      open: true,
+      type: "error",
+      text: "Something went wrong deleting your file!",
     });
   });
 

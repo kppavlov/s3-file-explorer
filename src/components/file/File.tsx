@@ -1,18 +1,18 @@
 import { useCallback, useState } from "react";
 
 // ICONS
-import DeleteFileIcon from "../assets/delete-file-icon.png";
+import DeleteFileIcon from "../../assets/delete-file-icon.png";
 
 // COMPONENTS
-import { Popup } from "../components/popup/Popup.tsx";
-import { Title } from "../components/title/Title.tsx";
-import { Button } from "../components/button/Button.tsx";
+import { Popup } from "../shared/popup/Popup.tsx";
+import { Title } from "../shared/title/Title.tsx";
+import { Button } from "../shared/button/Button.tsx";
 
 // CLASSES
-import s3 from "../classes/s3-access/s3.ts";
+import s3 from "../../classes/s3-access/s3.ts";
 
 // HOOKS
-import { useFileExplorerStateSelectors } from "../state/file-explorer-state.tsx";
+import { useFileExplorerStateSelectors } from "../../state/file-explorer-state.tsx";
 
 // UTILS
 import { makeBrowserDownloadFile } from "./utils.ts";
@@ -80,10 +80,12 @@ export const File = ({ value, path }: Props) => {
     const valueToGet = !objectPath ? value : objectPath;
 
     try {
+      console.log("calling this thing???");
       const objData = await s3.getObject(valueToGet);
       const bytes = await objData.Body.transformToByteArray();
       makeBrowserDownloadFile(bytes, value);
     } catch (e) {
+      console.log("rejected???", e);
       setCalloutState({
         open: true,
         type: "error",

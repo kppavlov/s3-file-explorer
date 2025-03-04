@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { DirectoryActions } from "./DirectoryActions.tsx";
-import { DirectoryTreeNode, FileTreeNode } from "../classes/tree/tree.ts";
+import { DirectoryTreeNode, FileTreeNode } from "../../classes/tree/tree.ts";
 import { describe, it, vi, beforeEach, expect } from "vitest";
 
 const mockSetCalloutState = vi.fn();
@@ -8,7 +8,7 @@ const mockSetPathToKeyMap = vi.fn();
 const mockRemoveNodeFromTree = vi.fn();
 const mockAddNodeToTree = vi.fn();
 
-vi.mock("../state/file-explorer-state", () => ({
+vi.mock("../../state/file-explorer-state", () => ({
   useFileExplorerStateSelectors: {
     use: {
       setCalloutState: vi.fn(() => mockSetCalloutState),

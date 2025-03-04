@@ -1,12 +1,12 @@
 import { useCallback, useState } from "react";
-import { DirectoryTreeNode, FileTreeNode } from "../classes/tree/tree.ts";
+import { DirectoryTreeNode, FileTreeNode } from "../../classes/tree/tree.ts";
 
 // HOOKS
 import {
   selectSelectedCwdByPath,
   selectKeyToUpdateByPath,
   useFileExplorerStateSelectors,
-} from "../state/file-explorer-state.tsx";
+} from "../../state/file-explorer-state.tsx";
 
 // COMPONENTS
 import { DirectoryActions } from "./DirectoryActions.tsx";

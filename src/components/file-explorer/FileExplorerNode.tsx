@@ -1,4 +1,4 @@
-import { DirectoryTreeNode, FileTreeNode } from "../classes/tree/tree.ts";
+import { DirectoryTreeNode, FileTreeNode } from "../../classes/tree/tree.ts";
 
 // COMPONENTS
 import { Directory } from "../directory/Directory.tsx";

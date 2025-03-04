@@ -4,7 +4,7 @@ import {
   FileSystemTree,
   FileTreeNode,
 } from "../classes/tree/tree.ts";
-import { CalloutProps } from "../components/callout/Callout.tsx";
+import { CalloutProps } from "../components/shared/callout/Callout.tsx";
 
 interface TreeContextState {
   currentWorkingDir: DirectoryTreeNode | null;
@@ -14,7 +14,6 @@ interface TreeContextState {
   setPathToKeyMap: (...paths: string[]) => void;
   deletePathToKeyMap: (paths: string) => void;
   addNodeToTree: (path: string, node: DirectoryTreeNode | FileTreeNode) => void;
-  setExpandedPaths: (path: string) => void;
   setCalloutState: (props: CalloutProps) => void;
   setTree: (tree: FileSystemTree) => void;
   removeNodeFromTree: (path: string) => void;
@@ -23,7 +22,6 @@ interface TreeContextState {
   selectedCurrentWorkingDir: string;
   tree: FileSystemTree | null;
   pathToKeyMap: Record<string, string>;
-  expandedPaths: Set<string>;
   calloutState: CalloutProps;
 }
 
@@ -50,7 +48,6 @@ export const useFileExplorerState = create<TreeContextState>()((set) => ({
   tree: null,
   selectedCurrentWorkingDir: "",
   pathToKeyMap: {},
-  expandedPaths: new Set<string>(),
   calloutState: {
     text: "",
     type: "success",
@@ -94,19 +91,6 @@ export const useFileExplorerState = create<TreeContextState>()((set) => ({
         pathToKeyMap: {
           ...newPathToKeyMap,
         },
-      };
-    }),
-  setExpandedPaths: (path) =>
-    set((state) => {
-      const newSet = new Set(state.expandedPaths);
-      if (newSet.has(path)) {
-        newSet.delete(path);
-      } else {
-        newSet.add(path);
-      }
-
-      return {
-        expandedPaths: newSet,
       };
     }),
   setSelectedCurrentWorkingDir: (path) =>

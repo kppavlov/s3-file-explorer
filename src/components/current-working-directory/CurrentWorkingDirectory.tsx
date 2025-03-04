@@ -1,11 +1,11 @@
 import { memo } from "react";
 
 // HOOKS
-import { useFileExplorerStateSelectors } from "../state/file-explorer-state.tsx";
+import { useFileExplorerStateSelectors } from "../../state/file-explorer-state.tsx";
 
 // COMPONENTS
 import { FileExplorerNode } from "../file-explorer/FileExplorerNode.tsx";
-import { Title } from "../components/title/Title.tsx";
+import { Title } from "../shared/title/Title.tsx";
 
 // STYLES
 import "./current-working-directory.css";

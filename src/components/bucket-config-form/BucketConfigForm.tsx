@@ -1,17 +1,17 @@
 import { useActionState, memo } from "react";
 
 // CLASSES
-import S3 from "../classes/s3-access/s3.ts";
+import S3 from "../../classes/s3-access/s3.ts";
 
 // COMPONENTS
-import { Input } from "../components/input/input.tsx";
-import { Button } from "../components/button/Button.tsx";
+import { Input } from "../shared/input/input.tsx";
+import { Button } from "../shared/button/Button.tsx";
 
 // STYLES
 import "./bucket-config-form.css";
 
 // HOOKS
-import { useFileExplorerStateSelectors } from "../state/file-explorer-state.tsx";
+import { useFileExplorerStateSelectors } from "../../state/file-explorer-state.tsx";
 
 // TYPES
 import { S3FormState } from "./types.ts";

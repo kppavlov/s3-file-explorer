@@ -1,15 +1,15 @@
 import { PropsWithChildren, useCallback, useState, useMemo } from "react";
 
 // ICONS
-import ArrowDown from "../assets/arrow-down-icon.png";
-import NewFolderIcon from "../assets/new-folder-icon.png";
-import NewFileIcon from "../assets/new-file-icon.png";
+import ArrowDown from "../../assets/arrow-down-icon.png";
+import NewFolderIcon from "../../assets/new-folder-icon.png";
+import NewFileIcon from "../../assets/new-file-icon.png";
 
 // CLASSES
-import { DirectoryTreeNode, FileTreeNode } from "../classes/tree/tree.ts";
+import { DirectoryTreeNode, FileTreeNode } from "../../classes/tree/tree.ts";
 
 // HOOKS
-import { useFileExplorerStateSelectors } from "../state/file-explorer-state.tsx";
+import { useFileExplorerStateSelectors } from "../../state/file-explorer-state.tsx";
 
 // TYPES
 import { InputState } from "./types.ts";
