@@ -26,8 +26,13 @@ export const BucketConfigForm = memo(() => {
 
   const [, dispatch, isPending] = useActionState<S3FormState, FormData>(
     async (formState, payload) => {
-      const { bucketName, region, accessKeySecret, accessKeyId } =
+      let { bucketName, region, accessKeySecret, accessKeyId } =
         Object.fromEntries(payload) as S3FormState;
+      bucketName = bucketName.trim();
+      region = region.trim();
+      accessKeySecret = accessKeySecret.trim();
+      accessKeyId = accessKeyId.trim();
+
       if (!bucketName || !region || !accessKeySecret || !accessKeyId) {
         setCalloutState({
           type: "error",
@@ -41,7 +46,7 @@ export const BucketConfigForm = memo(() => {
       }
 
       try {
-        const s3CurrentObjects = await S3.setProperties({
+        const s3CurrentObjects = await S3.setConnectionProperties({
           accessKeyId: accessKeyId,
           bucketName: bucketName,
           accessKeySecret: accessKeySecret,
