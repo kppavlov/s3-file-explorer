@@ -20,6 +20,7 @@ import { defaultInputState } from "./constants.ts";
 // COMPONENTS
 import { CreateFolderPopup } from "./CreateFolderPopup.tsx";
 import { CreateFilePopup } from "./CreateFilePopup.tsx";
+import { Button } from "../shared/button/Button.tsx";
 
 type Props = {
   showDirsOnly: boolean;
@@ -80,12 +81,13 @@ export const DirectoryActions = ({
     <>
       <div className="value-actions">
         {!shouldRemoveArrow ? (
-          <img
-            className={`arrow ${expanded ? "expand-arrow" : "collapse-arrow"}`}
-            alt="Collapse/expand image"
-            src={ArrowDown}
-            onClick={handleExpandDir}
-          />
+          <Button onClick={handleExpandDir}>
+            <img
+              className={`arrow ${expanded ? "expand-arrow" : "collapse-arrow"}`}
+              alt="Collapse/expand image"
+              src={ArrowDown}
+            />
+          </Button>
         ) : (
           <div className="arrow-filler"></div>
         )}
@@ -94,19 +96,26 @@ export const DirectoryActions = ({
 
         {!showDirsOnly && (
           <>
-            <img
-              className="img-hover-effect"
-              alt="New file icon"
-              src={NewFolderIcon}
+            <Button 
               onClick={handleAddNewDirectory}
-            />
+            >
+              <img
+                className="img-hover-effect"
+                alt="New file icon"
+                src={NewFolderIcon}
+              />
+            </Button>
 
-            <img
-              className="img-hover-effect"
-              alt="New file icon"
-              src={NewFileIcon}
+            <Button 
               onClick={handleAddNewFile}
-            />
+            >
+              <img
+                className="img-hover-effect"
+                alt="New file icon"
+                src={NewFileIcon}
+                
+              />
+            </Button>
           </>
         )}
       </div>

@@ -97,13 +97,14 @@ export const File = ({ value, path }: Props) => {
   return (
     <div className="file-styles">
       <span onClick={handleDownloadFile}>--{value}</span>{" "}
-      <img
-        data-testid={`delete-file-${path}`}
-        className="delete-file-icon"
-        alt="Delete file"
-        src={DeleteFileIcon}
-        onClick={handleOpenConfirmPopup}
-      />
+      <Button onClick={handleOpenConfirmPopup}>
+        <img
+          data-testid={`delete-file-${path}`}
+          className="delete-file-icon"
+          alt="Delete file"
+          src={DeleteFileIcon}
+        />
+      </Button>
       <Popup open={openPopup}>
         <div className="delete-file-popup-content">
           <Title>Are you sure you want to delete file: {value}?</Title>

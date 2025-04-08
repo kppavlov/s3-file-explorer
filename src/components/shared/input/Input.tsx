@@ -14,11 +14,12 @@ export const Input = ({
   label,
   errorText,
   error,
+  id,
   ...rest
 }: Props) => (
   <div className="input-style">
-    {label && <label htmlFor="accessKeySecret">{label}</label>}
-    <input {...rest} className={`${className ? className : ""}`} />
+    {label && <label htmlFor={id}>{label}</label>}
+    <input {...rest} id={id} className={`${className ? className : ""}`} />
     {error && errorText && <label className="label-error">{errorText}</label>}
   </div>
 );
