@@ -4,7 +4,7 @@ import { useActionState, memo } from "react";
 import S3 from "../../classes/s3-access/s3.ts";
 
 // COMPONENTS
-import { Input } from "../shared/input/input.tsx";
+import { Input } from "../shared/input/Input.tsx";
 import { Button } from "../shared/button/Button.tsx";
 
 // STYLES
@@ -86,14 +86,21 @@ export const BucketConfigForm = memo(() => {
   return (
     <>
       <form action={dispatch} className="form-styles">
-        <Input required name="accessKeySecret" label="Access key secret" />
-
-        <Input required name="accessKeyId" label="Access key id" />
-
-        <Input required name="bucketName" label="Bucket name" />
-
-        <Input required name="region" label="Region" />
-
+        <Input
+          required
+          type="password"
+          name="accessKeySecret"
+          id="accessKeySecret"
+          label="Access key secret"
+        />
+        <Input
+          required
+          name="accessKeyId"
+          id="accessKeyId"
+          label="Access key id"
+        />
+        <Input required name="bucketName" id="bucketName" label="Bucket name" />
+        <Input required name="region" id="region" label="Region" />
         <Button disabled={isPending} type="submit">
           Connect to S3
         </Button>

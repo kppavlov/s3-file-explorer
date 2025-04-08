@@ -18,16 +18,16 @@
 }
 
 .callout-styles.error {
-  background-color: #ffe8e8;
-  color: #d32f2f;
-  border: 1px solid #f5c2c2;
+  background-color: var(--danger-bg);
+  color: var(--danger-text);
+  border: 1px solid var(--danger-border);
   font-weight: 500;
 }
 
 .callout-styles.success {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-  border: 1px solid #c8e6c9;
+  background-color: var(--success-bg);
+  color: var(--success-text);
+  border: 1px solid var(--success-border);
   font-weight: 500;
 }
 

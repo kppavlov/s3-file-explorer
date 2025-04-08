@@ -1,11 +1,11 @@
 #root {
-  max-width: 1280px;
+  max-width: 80rem;
   margin: 0 auto;
   padding: 2rem;
 }
 
 .fs-tree {
-  min-width: 200px;
+  min-width: 12.5rem;
   height: min-content;
   border: 1px solid var(--border-color);
   padding: 0.5rem;

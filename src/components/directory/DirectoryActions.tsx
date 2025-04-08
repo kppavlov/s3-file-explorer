@@ -81,7 +81,7 @@ export const DirectoryActions = ({
     <>
       <div className="value-actions">
         {!shouldRemoveArrow ? (
-          <Button onClick={handleExpandDir}>
+          <Button type="action" onClick={handleExpandDir}>
             <img
               className={`arrow ${expanded ? "expand-arrow" : "collapse-arrow"}`}
               alt="Collapse/expand image"
@@ -96,9 +96,7 @@ export const DirectoryActions = ({
 
         {!showDirsOnly && (
           <>
-            <Button 
-              onClick={handleAddNewDirectory}
-            >
+            <Button type="action" onClick={handleAddNewDirectory}>
               <img
                 className="img-hover-effect"
                 alt="New file icon"
@@ -106,14 +104,11 @@ export const DirectoryActions = ({
               />
             </Button>
 
-            <Button 
-              onClick={handleAddNewFile}
-            >
+            <Button type="action" onClick={handleAddNewFile}>
               <img
                 className="img-hover-effect"
                 alt="New file icon"
                 src={NewFileIcon}
-                
               />
             </Button>
           </>

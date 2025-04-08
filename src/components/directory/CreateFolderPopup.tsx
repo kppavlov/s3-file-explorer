@@ -7,7 +7,7 @@ import {
 } from "react";
 
 // COMPONENTS
-import { Input } from "../shared/input/input.tsx";
+import { Input } from "../shared/input/Input.tsx";
 import { Button } from "../shared/button/Button.tsx";
 import { Popup } from "../shared/popup/Popup.tsx";
 

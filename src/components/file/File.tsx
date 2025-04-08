@@ -80,12 +80,10 @@ export const File = ({ value, path }: Props) => {
     const valueToGet = !objectPath ? value : objectPath;
 
     try {
-
       const objData = await s3.getObject(valueToGet);
       const bytes = await objData.Body.transformToByteArray();
       makeBrowserDownloadFile(bytes, value);
     } catch (e) {
-
       setCalloutState({
         open: true,
         type: "error",
@@ -97,7 +95,7 @@ export const File = ({ value, path }: Props) => {
   return (
     <div className="file-styles">
       <span onClick={handleDownloadFile}>--{value}</span>{" "}
-      <Button onClick={handleOpenConfirmPopup}>
+      <Button type="action" onClick={handleOpenConfirmPopup}>
         <img
           data-testid={`delete-file-${path}`}
           className="delete-file-icon"

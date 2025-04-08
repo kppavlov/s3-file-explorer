@@ -18,7 +18,7 @@
     justify-content: center;
     min-width: 7rem;
     min-height: 7rem;
-    background-color: #f9f9f9;
+    background-color: var(--bg-color);
     padding: 2rem;
   }
 }

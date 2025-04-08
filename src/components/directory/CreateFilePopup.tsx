@@ -28,7 +28,6 @@ export const CreateFilePopup = ({
 }) => {
   const setCalloutState = useFileExplorerStateSelectors.use.setCalloutState();
   const setPathToKeyMap = useFileExplorerStateSelectors.use.setPathToKeyMap();
-  const addNodeToTree = useFileExplorerStateSelectors.use.addNodeToTree();
 
   const inputCreateFileRef = useRef<HTMLInputElement | null>(null);
 
@@ -88,8 +87,8 @@ export const CreateFilePopup = ({
     if (dir instanceof DirectoryTreeNode) {
       // adds new node to the parent node reference
       const nodeToAdd = new FileTreeNode(val.name, dir.path);
+      dir.addNode(nodeToAdd);
 
-      addNodeToTree(dir.path, nodeToAdd);
       setPathToKeyMap(dir.path, `${dir.path}/${val.name}`);
       setCalloutState({
         open: true,

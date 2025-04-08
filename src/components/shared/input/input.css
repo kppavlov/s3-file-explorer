@@ -4,23 +4,23 @@
   }
 
   .label-error {
-    color: darkred;
+    color: var(--danger);
     font-size: 0.8rem;
   }
 
   input {
     height: 1.5rem;
     width: 100%;
-    background-color: #ffffff;
-    border: 1px solid #cccccc;
-    color: #333333;
-    border-radius: 6px;
-    font-size: 16px;
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    color: var(--input-color);
+    border-radius: 0.375rem;
+    font-size: 1rem;
     transition: all 0.2s ease;
   }
 
   input::placeholder {
-    color: #888888;
+    color: var(--placeholder-color);
   }
 
   input:hover {
